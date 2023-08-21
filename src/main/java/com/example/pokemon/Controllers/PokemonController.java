@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 
@@ -30,6 +31,22 @@ public class PokemonController {
         Pokemon novoPokemon = dao.save(pokemon);
         return  novoPokemon;
     }
+
+    @PutMapping
+    public Pokemon editarPokemon(@RequestBody Pokemon pokemon) {
+        Pokemon PokemonAtt = dao.save(pokemon);
+        return  PokemonAtt;
+    }
+
+    @DeleteMapping("/{id}")
+    public Optional<Pokemon> excluirPokemon(@PathVariable Integer id){
+        Optional<Pokemon> pokemon = dao.findById(id.longValue());
+        dao.deleteById(id.longValue());
+        return pokemon;
+    }
+
+
+
 }
 
 
