@@ -1,48 +1,46 @@
 package com.example.pokemon.Controllers;
 
-import com.example.pokemon.DAO.IPokemon;
+import com.example.pokemon.repository.IPokemon;
 import com.example.pokemon.model.Pokemon;
+import com.example.pokemon.service.PokemonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-
 @RequestMapping
-
 public class PokemonController {
-
-    private final IPokemon dao;
-
     @Autowired
-    public PokemonController(IPokemon dao) {
-        this.dao = dao;
+    private IPokemon dao;
+
+    private PokemonService pokemonService;
+
+    public PokemonController(PokemonService pokemonService){
+        this.pokemonService = pokemonService;
     }
 
     @GetMapping
-    public List<Pokemon> listaPokemon() {
-        return (List<Pokemon>) dao.findAll();
+    public ResponseEntity<List<Pokemon>>listaPokemon() {
+        return ResponseEntity.status(200).body(pokemonService.ListarPokemon());
     }
 
     @PostMapping
-    public Pokemon criarPokemon(@RequestBody Pokemon pokemon) {
-        Pokemon novoPokemon = dao.save(pokemon);
-        return  novoPokemon;
+    public ResponseEntity<Pokemon> criarPokemon(@RequestBody Pokemon pokemon) {
+        return  ResponseEntity.status(201).body(pokemonService.criarPokemon(pokemon));
     }
 
     @PutMapping
-    public Pokemon editarPokemon(@RequestBody Pokemon pokemon) {
+    public ResponseEntity<Pokemon> editarPokemon(@RequestBody Pokemon pokemon) {
         Pokemon PokemonAtt = dao.save(pokemon);
-        return  PokemonAtt;
+        return  ResponseEntity.status(201).body(PokemonAtt);
     }
 
     @DeleteMapping("/{id}")
-    public Optional<Pokemon> excluirPokemon(@PathVariable Integer id){
-        Optional<Pokemon> pokemon = dao.findById(id.longValue());
+    public ResponseEntity<?> excluirPokemon(@PathVariable Integer id){
         dao.deleteById(id.longValue());
-        return pokemon;
+        return ResponseEntity.status(204).build();
     }
 
 
